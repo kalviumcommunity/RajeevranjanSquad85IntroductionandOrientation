@@ -14,6 +14,12 @@ public class Course {
     public void setCourse(int courseId, String name) {
         this.courseId = courseId;
         this.name = name;
+    } 
+    public int getCourseId() {
+        return courseId;
+    } 
+    public String getCourseName() {
+        return name;
     }
 
     public void display() {
