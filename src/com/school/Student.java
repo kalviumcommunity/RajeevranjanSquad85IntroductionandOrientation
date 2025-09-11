@@ -1,8 +1,8 @@
 package src.com.school;
 
-public class Student extends Person { 
+public class Student extends Person implements Storable { // Extends Person
 
-    private String gradeLevel; 
+    private String gradeLevel; // Example new specific field
 
     public Student(String name, String gradeLevel) {
         super(name); // Calls Person constructor
@@ -18,5 +18,11 @@ public class Student extends Person {
     public void displayDetails() {
         super.displayDetails(); // Call Person's displayDetails
         System.out.println(", Grade Level: " + gradeLevel + " (Role: Student)");
+    }
+
+    @Override
+    public String toDataString() {
+        // Format: id,name,gradeLevel
+        return getId() + "," + getName() + "," + gradeLevel;
     }
 }

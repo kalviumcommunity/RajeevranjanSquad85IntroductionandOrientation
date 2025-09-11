@@ -1,29 +1,34 @@
 package src.com.school;
 
-public class Course {
+public class Course implements Storable {
     private static int nextCourseIdCounter = 101;
-    private int courseId;
-    private String name;
 
-    // Constructor to initialize course name and auto-generate courseId
-    public Course(String name) {
-        this.courseId = nextCourseIdCounter++;
-        this.name = name;
+    private int courseId;       // Made private
+    private String courseName;  // Made private
+
+    // Constructor
+    public Course(String courseName) {
+        this.courseId = nextCourseIdCounter++; // Auto-increment and assign ID
+        this.courseName = courseName;          // Assign course name
     }
 
-    public void setCourse(int courseId, String name) {
-        this.courseId = courseId;
-        this.name = name;
-    } 
+    // Getter for courseId
     public int getCourseId() {
         return courseId;
-    } 
+    }
+
+    // Getter for courseName
     public String getCourseName() {
-        return name;
+        return courseName;
     }
 
-    public void display() {
-        System.out.println("courseId: " + " " + courseId + " " + "name: " + " " + name);
+    public void displayDetails() {
+        System.out.println("Course ID: C" + this.courseId + ", Name: " + this.courseName);
     }
 
+    @Override
+    public String toDataString() {
+        // Format: courseId,courseName
+        return courseId + "," + courseName;
+    }
 }
