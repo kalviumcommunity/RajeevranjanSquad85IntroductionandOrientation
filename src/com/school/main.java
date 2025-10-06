@@ -7,63 +7,74 @@ public class main {
 
     public static void displaySchoolDirectory(List<Person> people) {
         System.out.println("\n--- School Directory ---");
+        if (people.isEmpty()) {
+            System.out.println("No people in the directory.");
+            return;
+        }
         for (Person person : people) {
             person.displayDetails();
         }
     }
 
     public static void main(String[] args) {
-        System.out.println("--- School Administration & Attendance System ---");
+        System.out.println("--- School System (Overloading Demo) ---");
 
-        // --- Data Setup ---
+        // --- Setup Services ---
+        FileStorageService storageService = new FileStorageService();
+        AttendanceService attendanceService = new AttendanceService(storageService);
+
+        // --- Data Setup: Students and Courses ---
+        List<Student> allStudents = new ArrayList<>();
         Student student1 = new Student("Alice Wonderland", "Grade 10");
         Student student2 = new Student("Bob The Builder", "Grade 9");
-        Teacher teacher1 = new Teacher("Dr. Smith", "Physics");
-        Staff staff1 = new Staff("Ms. Johnson", "Admin");
+        Student student3 = new Student("Charlie Chaplin", "Grade 10");
+        allStudents.add(student1);
+        allStudents.add(student2);
+        allStudents.add(student3);
 
-        List<Person> schoolPeople = new ArrayList<>();
-        schoolPeople.add(student1);
-        schoolPeople.add(student2);
+        List<Course> allCourses = new ArrayList<>();
+        Course course1 = new Course("Intro to Programming"); // ID will be C101
+        Course course2 = new Course("Data Structures");      // ID will be C102
+        allCourses.add(course1);
+        allCourses.add(course2);
+
+        List<Person> schoolPeople = new ArrayList<>(allStudents);
+        Teacher teacher1 = new Teacher("Dr. Emily Carter", "Physics");
         schoolPeople.add(teacher1);
-        schoolPeople.add(staff1);
-
         displaySchoolDirectory(schoolPeople);
 
-        List<Course> courses = new ArrayList<>();
-        Course course1 = new Course("Intro to Quantum Physics");
-        Course course2 = new Course("Advanced Algorithms");
-        courses.add(course1);
-        courses.add(course2);
+        System.out.println("\n\n--- Marking Attendance (Overloaded Methods) ---");
+        // 1. Mark attendance using Student and Course objects
+        attendanceService.markAttendance(student1, course1, "Present");
+        attendanceService.markAttendance(student2, course1, "Absent");
 
-        List<AttendanceRecord> attendanceLog = new ArrayList<>();
-        attendanceLog.add(new AttendanceRecord(student1, course1, "Present"));
-        attendanceLog.add(new AttendanceRecord(student2, course1, "Absent"));
-        attendanceLog.add(new AttendanceRecord(student1, course2, "Present"));
+        // 2. Mark attendance using studentId and courseId (assuming IDs are known or looked up)
+        // Alice (ID 1) in Data Structures (ID C102)
+        attendanceService.markAttendance(student1.getId(), course2.getCourseId(), "Present", allStudents, allCourses);
+        // Charlie (ID 3) in Intro to Programming (ID C101)
+        attendanceService.markAttendance(student3.getId(), course1.getCourseId(), "Late", allStudents, allCourses); // Invalid status
 
-        System.out.println("\nCourses:");
-        for (Course c : courses)
-            c.displayDetails();
-        System.out.println("\nAttendance Log (Initial):");
-        for (AttendanceRecord ar : attendanceLog)
-            ar.displayRecord();
 
-        // --- Saving Data ---
-        System.out.println("\n--- Saving Data to Files ---");
-        FileStorageService storageService = new FileStorageService();
+        System.out.println("\n\n--- Querying Attendance (Overloaded Methods) ---");
+        // 1. Display full attendance log
+        attendanceService.displayAttendanceLog();
 
-        // Filter students from schoolPeople for saving
-        List<Student> students = new ArrayList<>();
-        for (Person p : schoolPeople) {
-            if (p instanceof Student) {
-                students.add((Student) p);
-            }
-        }
+        // 2. Display attendance for a specific student (Alice)
+        attendanceService.displayAttendanceLog(student1);
 
-        storageService.saveData(students, "students.txt");
-        storageService.saveData(courses, "courses.txt");
-        storageService.saveData(attendanceLog, "attendance_log.txt");
+        // 3. Display attendance for a specific course (Intro to Programming)
+        attendanceService.displayAttendanceLog(course1);
 
-        System.out.println("\nSession 6: Interface-Driven Persistence (Saving) Complete.");
-        System.out.println("Check students.txt, courses.txt, and attendance_log.txt for output.");
+        // --- Saving Attendance Data ---
+        System.out.println("\n\n--- Saving Attendance Data ---");
+        attendanceService.saveAttendanceData(); // This will save to attendance_log.txt
+
+        // For completeness, we might want to save students and courses too if they changed
+        // storageService.saveData(allStudents, "students.txt");
+        // storageService.saveData(allCourses, "courses.txt");
+        System.out.println("Student and Course data can be saved similarly if needed.");
+
+
+        System.out.println("\nSession 8: Overloaded Commands Demonstrated Complete.");
     }
 }
