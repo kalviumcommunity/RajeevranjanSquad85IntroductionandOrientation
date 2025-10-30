@@ -16,6 +16,17 @@ public class AttendanceService {
         // loadAttendanceData();
     }
 
+    // New constructor accepting RegistrationService (even if not used, for
+    // compatibility)
+    public AttendanceService(FileStorageService storageService, RegistrationService registrationService) {
+        this.attendanceLog = new ArrayList<>();
+        this.storageService = storageService;
+        // registrationService parameter is accepted for compatibility, but not
+        // stored/used here
+        // In a real app, you might use registrationService for lookups, etc.
+        // loadAttendanceData();
+    }
+
     // Overloaded method 1: Mark attendance with objects
     public void markAttendance(Student student, Course course, String status) {
         if (student == null || course == null) {
@@ -24,11 +35,13 @@ public class AttendanceService {
         }
         AttendanceRecord record = new AttendanceRecord(student, course, status);
         this.attendanceLog.add(record);
-        System.out.println("Attendance marked for " + student.getName() + " in " + course.getCourseName() + " as " + record.getStatus());
+        System.out.println("Attendance marked for " + student.getName() + " in " + course.getCourseName() + " as "
+                + record.getStatus());
     }
 
     // Overloaded method 2: Mark attendance with IDs (requires lookup)
-    public void markAttendance(int studentId, int courseId, String status, List<Student> allStudents, List<Course> allCourses) {
+    public void markAttendance(int studentId, int courseId, String status, List<Student> allStudents,
+            List<Course> allCourses) {
         Student student = findStudentById(studentId, allStudents);
         Course course = findCourseById(courseId, allCourses);
 
@@ -58,7 +71,8 @@ public class AttendanceService {
 
     // Overloaded method 2: Display attendance for a specific student
     public void displayAttendanceLog(Student student) {
-        System.out.println("\n--- Attendance Log for Student: " + student.getName() + " (ID: " + student.getId() + ") ---");
+        System.out.println(
+                "\n--- Attendance Log for Student: " + student.getName() + " (ID: " + student.getId() + ") ---");
         List<AttendanceRecord> studentRecords = attendanceLog.stream()
                 .filter(record -> record.getStudent().getId() == student.getId())
                 .collect(Collectors.toList());
@@ -74,7 +88,8 @@ public class AttendanceService {
 
     // Overloaded method 3: Display attendance for a specific course
     public void displayAttendanceLog(Course course) {
-        System.out.println("\n--- Attendance Log for Course: " + course.getCourseName() + " (ID: C" + course.getCourseId() + ") ---");
+        System.out.println("\n--- Attendance Log for Course: " + course.getCourseName() + " (ID: C"
+                + course.getCourseId() + ") ---");
         List<AttendanceRecord> courseRecords = attendanceLog.stream()
                 .filter(record -> record.getCourse().getCourseId() == course.getCourseId())
                 .collect(Collectors.toList());
@@ -87,17 +102,20 @@ public class AttendanceService {
         }
     }
 
-    // Helper methods for lookup (could be in a separate utility or respective services)
+    // Helper methods for lookup (could be in a separate utility or respective
+    // services)
     private Student findStudentById(int studentId, List<Student> students) {
         for (Student s : students) {
-            if (s.getId() == studentId) return s;
+            if (s.getId() == studentId)
+                return s;
         }
         return null;
     }
 
     private Course findCourseById(int courseId, List<Course> courses) {
         for (Course c : courses) {
-            if (c.getCourseId() == courseId) return c;
+            if (c.getCourseId() == courseId)
+                return c;
         }
         return null;
     }
@@ -109,6 +127,7 @@ public class AttendanceService {
         storageService.saveData(this.attendanceLog, ATTENDANCE_FILE);
     }
 
-    // Placeholder for loading data - complex, involves parsing strings back to objects
+    // Placeholder for loading data - complex, involves parsing strings back to
+    // objects
     // public void loadAttendanceData() { ... }
 }
